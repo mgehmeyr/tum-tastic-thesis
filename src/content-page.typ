@@ -29,7 +29,7 @@
   }
 
   // --------------  Content  --------------
-  #outline(title: [Content])
+  #outline(title: [Contents])
 ]
 
 #let outline-style(doc) = {

@@ -59,6 +59,43 @@
   )
 ]
 
+#let show-zusammenfassung = [
+  #show: dissertation.with(
+    show-index: false,
+    show-algorithm-index: false,
+    show-figures-index: false,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    zusammenfassung: [Here is my custom Zusammenfassung],
+    abstract: none,
+  )
+]
+
+// Covers: acknowledgements -> zusammenfassung -> abstract -> contents order;
+// figures/tables indexes printed as front matter (before the body); and
+// that disabled indexes (listing, algorithm) are not emitted.
+#let show-front-matter-order = [
+  #show: dissertation.with(
+    show-index: true,
+    show-algorithm-index: false,
+    show-figures-index: true,
+    show-cover: false,
+    show-table-index: true,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: [Here are my custom acknowledgements],
+    zusammenfassung: [Here is my custom Zusammenfassung],
+    abstract: [Here is my custom abstract],
+  )
+
+  = Body
+  #figure(rect(), caption: [A figure in the body])
+  #figure(table(columns: 1)[Cell], caption: [A table in the body])
+]
+
 #let show-index = [
   #show: dissertation.with(
     show-index: true,
@@ -268,6 +305,8 @@
 #show-index
 #show-abstract
 #show-acknowledgements
+#show-zusammenfassung
+#show-front-matter-order
 #show-algorithm-index
 #show-figures-index
 #show-table-index

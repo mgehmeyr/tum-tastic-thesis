@@ -4,6 +4,7 @@
 #import "content-page.typ": *
 #import "abstract-page.typ": print-abstract
 #import "acknowledgements-page.typ": print-acknowledgements
+#import "zusammenfassung-page.typ": print-zusammenfassung
 #import "content-page.typ": *
 #import "cover-page.typ": print-cover
 #import "title-page.typ": print-dissertation-title, print-thesis-title
@@ -238,6 +239,7 @@
     day: 4,
   ),
   acknowledgements: [#lorem(100)],
+  zusammenfassung: none,
   abstract: [#lorem(100)],
   show-cover: true,
   cover-image: none,
@@ -286,13 +288,42 @@
     print-empty-page()
   }
 
+  if zusammenfassung != none {
+    print-zusammenfassung(zusammenfassung)
+    pagebreak()
+  }
+
   if abstract != none {
     print-abstract(abstract)
     pagebreak()
   }
 
+  // Front-matter indexes: Table of Contents, then Figures/Tables/Listings/
+  // Algorithms, all before the main body. `outline()` resolves its entries
+  // from the whole document regardless of where it is placed, so moving
+  // these ahead of `doc` does not affect what they list.
   if show-index {
     print-index()
+    pagebreak()
+  }
+
+  if show-figures-index {
+    print-figure-index()
+    pagebreak()
+  }
+
+  if show-table-index {
+    print-table-index()
+    pagebreak()
+  }
+
+  if show-listing-index {
+    print-listing-index()
+    pagebreak()
+  }
+
+  if show-algorithm-index {
+    print-algorithm-index()
     pagebreak()
   }
 
@@ -300,27 +331,6 @@
   show: chapter.with(show-chapter-header: show-chapter-header)
 
   doc
-
-  // --------- After Content -------
-  if show-figures-index {
-    pagebreak()
-    print-figure-index()
-  }
-
-  if show-table-index {
-    pagebreak()
-    print-table-index()
-  }
-
-  if show-listing-index {
-    pagebreak()
-    print-listing-index()
-  }
-
-  if show-algorithm-index {
-    pagebreak()
-    print-algorithm-index()
-  }
 }
 
 #let thesis(
