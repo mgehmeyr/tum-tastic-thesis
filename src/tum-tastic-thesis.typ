@@ -251,7 +251,7 @@
   show-listing-index: true,
   show-algorithm-index: true,
   show-chapter-header: true,
-  front-matter-order: (
+  section-order: (
     "acknowledgements",
     "zusammenfassung",
     "abstract",
@@ -261,6 +261,7 @@
     "table-index",
     "listing-index",
     "algorithm-index",
+    "body",
   ),
   doc,
 ) = {
@@ -273,7 +274,9 @@
   // by whatever break the existing design used between sections. `outline()`
   // resolves its entries from the whole document regardless of where it is
   // placed, so reordering the indexes here does not affect what they list.
-  let front-matter-sections = (
+  // "body" is handled separately below since it needs `chapter`'s show
+  // rule to still be in effect for anything placed after it.
+  let sections = (
     acknowledgements: () => if acknowledgements != none {
       print-acknowledgements(acknowledgements)
       print-empty-page()
@@ -339,17 +342,47 @@
 
   set page(numbering: "i")
 
-  for key in front-matter-order {
-    if key not in front-matter-sections {
-      panic("[dissertation] Unknown front-matter-order key: " + key)
+  let body-count = section-order.filter(key => key == "body").len()
+  if body-count != 1 {
+    panic(
+      "[dissertation] section-order must contain \"body\" exactly once, found "
+        + str(body-count),
+    )
+  }
+
+  let body-index = section-order.position(key => key == "body")
+  let sections-before-body = section-order.slice(0, body-index)
+  let sections-after-body = section-order.slice(body-index + 1)
+
+  let print-section(key) = {
+    if key not in sections {
+      panic("[dissertation] Unknown section-order key: " + key)
     }
-    (front-matter-sections.at(key))()
+    (sections.at(key))()
+  }
+
+  for key in sections-before-body {
+    print-section(key)
   }
 
   // ----------- Content -----------
+  // A bare `show:` here applies to `doc` and to anything placed after
+  // "body" in section-order (e.g. indexes moved back to the end).
   show: chapter.with(show-chapter-header: show-chapter-header)
 
   doc
+
+  // Unlike every other section, `doc` doesn't end with a trailing
+  // pagebreak of its own, so without this, the first section placed
+  // after "body" could land on the same page as the tail of the last
+  // chapter.
+  if sections-after-body.len() > 0 {
+    pagebreak()
+  }
+
+  for key in sections-after-body {
+    print-section(key)
+  }
 }
 
 #let thesis(

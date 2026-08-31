@@ -113,9 +113,9 @@
   #figure(table(columns: 1)[Cell], caption: [A table in the body])
 ]
 
-// Covers: front-matter-order lets callers pick an arbitrary order,
-// including putting the Table of Contents before other front-matter
-// sections (which still lists them correctly regardless of placement).
+// Covers: section-order lets callers pick an arbitrary order, including
+// putting the Table of Contents before other front-matter sections
+// (which still lists them correctly regardless of placement).
 #let show-custom-front-matter-order = [
   #show: dissertation.with(
     show-index: true,
@@ -129,10 +129,34 @@
     zusammenfassung: [Here is my custom Zusammenfassung],
     abstract: [Here is my custom abstract],
     glossary: [Here is my custom Glossary],
-    front-matter-order: ("index", "glossary", "abstract", "zusammenfassung"),
+    section-order: ("index", "glossary", "abstract", "zusammenfassung", "body"),
   )
 
   = Body
+]
+
+// Covers: "body" can be moved earlier in section-order so indexes print
+// after the body instead of before it (the pre-front-matter-reorder
+// behavior), and that the body-to-index transition still starts on a
+// fresh page instead of sharing a page with the tail of the last chapter.
+#let show-index-after-body = [
+  #show: dissertation.with(
+    show-index: false,
+    show-algorithm-index: false,
+    show-figures-index: true,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    zusammenfassung: none,
+    abstract: none,
+    glossary: none,
+    section-order: ("body", "figures-index"),
+  )
+
+  = Body
+  #figure(rect(), caption: [A figure in the body])
 ]
 
 #let show-index = [
@@ -348,6 +372,7 @@
 #show-glossary
 #show-front-matter-order
 #show-custom-front-matter-order
+#show-index-after-body
 #show-algorithm-index
 #show-figures-index
 #show-table-index
