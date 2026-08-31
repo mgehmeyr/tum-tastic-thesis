@@ -42,6 +42,7 @@ PKG_VERSION="$(read-toml "$PKG_ROOT/typst.toml" "version")"
 files=(
   src/
   template/
+  assets/
   typst.toml
   LICENSE
   thumbnail.png

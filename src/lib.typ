@@ -10,3 +10,6 @@
 // styling
 #import "tum-font.typ": font-sizes
 #import "tum-colors.typ": tum-colors
+
+// assets
+#import "tum-tower.typ": tum-tower-image
