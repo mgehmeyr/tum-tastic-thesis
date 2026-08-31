@@ -5,6 +5,7 @@
 #import "abstract-page.typ": print-abstract
 #import "acknowledgements-page.typ": print-acknowledgements
 #import "zusammenfassung-page.typ": print-zusammenfassung
+#import "glossary-page.typ": print-glossary-page
 #import "content-page.typ": *
 #import "cover-page.typ": print-cover
 #import "title-page.typ": print-dissertation-title, print-thesis-title
@@ -241,6 +242,7 @@
   acknowledgements: [#lorem(100)],
   zusammenfassung: none,
   abstract: [#lorem(100)],
+  glossary: none,
   show-cover: true,
   cover-image: none,
   show-index: true,
@@ -295,6 +297,11 @@
 
   if abstract != none {
     print-abstract(abstract)
+    pagebreak()
+  }
+
+  if glossary != none {
+    print-glossary-page(glossary)
     pagebreak()
   }
 

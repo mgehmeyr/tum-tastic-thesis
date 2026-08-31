@@ -74,9 +74,25 @@
   )
 ]
 
-// Covers: acknowledgements -> zusammenfassung -> abstract -> contents order;
-// figures/tables indexes printed as front matter (before the body); and
-// that disabled indexes (listing, algorithm) are not emitted.
+#let show-glossary = [
+  #show: dissertation.with(
+    show-index: false,
+    show-algorithm-index: false,
+    show-figures-index: false,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    abstract: none,
+    glossary: [Here is my custom Glossary],
+  )
+]
+
+// Covers: acknowledgements -> zusammenfassung -> abstract -> glossary ->
+// contents order; figures/tables indexes printed as front matter (before
+// the body); and that disabled indexes (listing, algorithm) are not
+// emitted.
 #let show-front-matter-order = [
   #show: dissertation.with(
     show-index: true,
@@ -89,6 +105,7 @@
     acknowledgements: [Here are my custom acknowledgements],
     zusammenfassung: [Here is my custom Zusammenfassung],
     abstract: [Here is my custom abstract],
+    glossary: [Here is my custom Glossary],
   )
 
   = Body
@@ -306,6 +323,7 @@
 #show-abstract
 #show-acknowledgements
 #show-zusammenfassung
+#show-glossary
 #show-front-matter-order
 #show-algorithm-index
 #show-figures-index
