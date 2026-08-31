@@ -89,6 +89,29 @@
   )
 ]
 
+// Covers: headings nested inside a front-matter section's body (e.g. a
+// Glossary's term-group headings) get the same h2/h3/h4 sizing as
+// headings in the main body, instead of falling back to Typst's
+// defaults.
+#let show-glossary-with-nested-headings = [
+  #show: dissertation.with(
+    show-index: false,
+    show-algorithm-index: false,
+    show-figures-index: false,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    abstract: none,
+    glossary: [
+      == A level-2 heading
+      === A level-3 heading
+      ==== A level-4 heading
+    ],
+  )
+]
+
 // Covers: acknowledgements -> zusammenfassung -> abstract -> glossary ->
 // contents order; figures/tables indexes printed as front matter (before
 // the body); and that disabled indexes (listing, algorithm) are not
@@ -370,6 +393,7 @@
 #show-acknowledgements
 #show-zusammenfassung
 #show-glossary
+#show-glossary-with-nested-headings
 #show-front-matter-order
 #show-custom-front-matter-order
 #show-index-after-body
