@@ -113,6 +113,28 @@
   #figure(table(columns: 1)[Cell], caption: [A table in the body])
 ]
 
+// Covers: front-matter-order lets callers pick an arbitrary order,
+// including putting the Table of Contents before other front-matter
+// sections (which still lists them correctly regardless of placement).
+#let show-custom-front-matter-order = [
+  #show: dissertation.with(
+    show-index: true,
+    show-algorithm-index: false,
+    show-figures-index: false,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    zusammenfassung: [Here is my custom Zusammenfassung],
+    abstract: [Here is my custom abstract],
+    glossary: [Here is my custom Glossary],
+    front-matter-order: ("index", "glossary", "abstract", "zusammenfassung"),
+  )
+
+  = Body
+]
+
 #let show-index = [
   #show: dissertation.with(
     show-index: true,
@@ -325,6 +347,7 @@
 #show-zusammenfassung
 #show-glossary
 #show-front-matter-order
+#show-custom-front-matter-order
 #show-algorithm-index
 #show-figures-index
 #show-table-index

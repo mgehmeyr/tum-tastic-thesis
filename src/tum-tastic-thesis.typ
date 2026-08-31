@@ -251,12 +251,66 @@
   show-listing-index: true,
   show-algorithm-index: true,
   show-chapter-header: true,
+  front-matter-order: (
+    "acknowledgements",
+    "zusammenfassung",
+    "abstract",
+    "glossary",
+    "index",
+    "figures-index",
+    "table-index",
+    "listing-index",
+    "algorithm-index",
+  ),
   doc,
 ) = {
   let print-empty-page() = [
     #pagebreak()
     #pagebreak()
   ]
+
+  // Each entry prints its section (if enabled by its own argument) followed
+  // by whatever break the existing design used between sections. `outline()`
+  // resolves its entries from the whole document regardless of where it is
+  // placed, so reordering the indexes here does not affect what they list.
+  let front-matter-sections = (
+    acknowledgements: () => if acknowledgements != none {
+      print-acknowledgements(acknowledgements)
+      print-empty-page()
+    },
+    zusammenfassung: () => if zusammenfassung != none {
+      print-zusammenfassung(zusammenfassung)
+      pagebreak()
+    },
+    abstract: () => if abstract != none {
+      print-abstract(abstract)
+      pagebreak()
+    },
+    glossary: () => if glossary != none {
+      print-glossary-page(glossary)
+      pagebreak()
+    },
+    index: () => if show-index {
+      print-index()
+      pagebreak()
+    },
+    figures-index: () => if show-figures-index {
+      print-figure-index()
+      pagebreak()
+    },
+    table-index: () => if show-table-index {
+      print-table-index()
+      pagebreak()
+    },
+    listing-index: () => if show-listing-index {
+      print-listing-index()
+      pagebreak()
+    },
+    algorithm-index: () => if show-algorithm-index {
+      print-algorithm-index()
+      pagebreak()
+    },
+  )
 
   // ----------- Sets -----------
   set document(title: title, author: author-info.name, date: datetime.today())
@@ -285,53 +339,11 @@
 
   set page(numbering: "i")
 
-  if acknowledgements != none {
-    print-acknowledgements(acknowledgements)
-    print-empty-page()
-  }
-
-  if zusammenfassung != none {
-    print-zusammenfassung(zusammenfassung)
-    pagebreak()
-  }
-
-  if abstract != none {
-    print-abstract(abstract)
-    pagebreak()
-  }
-
-  if glossary != none {
-    print-glossary-page(glossary)
-    pagebreak()
-  }
-
-  // Front-matter indexes: Table of Contents, then Figures/Tables/Listings/
-  // Algorithms, all before the main body. `outline()` resolves its entries
-  // from the whole document regardless of where it is placed, so moving
-  // these ahead of `doc` does not affect what they list.
-  if show-index {
-    print-index()
-    pagebreak()
-  }
-
-  if show-figures-index {
-    print-figure-index()
-    pagebreak()
-  }
-
-  if show-table-index {
-    print-table-index()
-    pagebreak()
-  }
-
-  if show-listing-index {
-    print-listing-index()
-    pagebreak()
-  }
-
-  if show-algorithm-index {
-    print-algorithm-index()
-    pagebreak()
+  for key in front-matter-order {
+    if key not in front-matter-sections {
+      panic("[dissertation] Unknown front-matter-order key: " + key)
+    }
+    (front-matter-sections.at(key))()
   }
 
   // ----------- Content -----------
