@@ -10,7 +10,7 @@ disciplines = ["computer-science"]
 license = "MIT"
 description = "Thesis and Dissertation for the TU Munich."
 keywords = ["thesis", "dissertation", "tum"]
-exclude = []
+exclude = ["tests/**", "scripts/**", ".github/**", ".vscode/**", "Justfile"]
 
 [template]
 path = "template"
