@@ -61,6 +61,7 @@
   show-listing-index: false,
   show-algorithm-index: false,
   show-chapter-header: true,
+  sizes: font-sizes,
   doc,
 ) = {
   // ----------- Sets -----------
@@ -141,7 +142,7 @@
 
   set figure(gap: 1em)
 
-  set text(size: font-sizes.base)
+  set text(size: sizes.base)
 
   set par(justify: true, first-line-indent: first-line-indent)
 
@@ -155,33 +156,33 @@
     counter(figure.where(kind: raw)).update(0)
     counter(figure.where(kind: "algorithm")).update(0)
 
-    set text(size: font-sizes.h1)
+    set text(size: sizes.h1)
     v(2em)
     strong(it)
     v(1em)
   }
 
   show heading.where(level: 2): it => {
-    set text(size: font-sizes.h2)
+    set text(size: sizes.h2)
     v(0.2em)
     strong(it)
     v(0.6em)
   }
 
   show heading.where(level: 3): it => {
-    set text(size: font-sizes.h3)
+    set text(size: sizes.h3)
     strong(it)
     v(0.3em)
   }
 
   show heading.where(level: 4): it => {
-    set text(size: font-sizes.h4)
+    set text(size: sizes.h4)
     strong(it)
   }
 
   // ----------- Preamble -----------
   if show-index {
-    print-index()
+    print-index(sizes: sizes)
     pagebreak()
   }
 
@@ -196,22 +197,22 @@
   // previous section the doc had last
   if show-figures-index {
     pagebreak()
-    print-figure-index()
+    print-figure-index(sizes: sizes)
   }
 
   if show-table-index {
     pagebreak()
-    print-table-index()
+    print-table-index(sizes: sizes)
   }
 
   if show-listing-index {
     pagebreak()
-    print-listing-index()
+    print-listing-index(sizes: sizes)
   }
 
   if show-algorithm-index {
     pagebreak()
-    print-algorithm-index()
+    print-algorithm-index(sizes: sizes)
   }
 }
 
@@ -263,8 +264,11 @@
     "algorithm-index",
     "body",
   ),
+  heading-sizes: (:),
   doc,
 ) = {
+  let sizes = font-sizes + heading-sizes
+
   let print-empty-page() = [
     #pagebreak()
     #pagebreak()
@@ -278,39 +282,39 @@
   // rule to still be in effect for anything placed after it.
   let sections = (
     acknowledgements: () => if acknowledgements != none {
-      print-acknowledgements(acknowledgements)
+      print-acknowledgements(acknowledgements, sizes: sizes)
       print-empty-page()
     },
     zusammenfassung: () => if zusammenfassung != none {
-      print-zusammenfassung(zusammenfassung)
+      print-zusammenfassung(zusammenfassung, sizes: sizes)
       pagebreak()
     },
     abstract: () => if abstract != none {
-      print-abstract(abstract)
+      print-abstract(abstract, sizes: sizes)
       pagebreak()
     },
     glossary: () => if glossary != none {
-      print-glossary-page(glossary)
+      print-glossary-page(glossary, sizes: sizes)
       pagebreak()
     },
     index: () => if show-index {
-      print-index()
+      print-index(sizes: sizes)
       pagebreak()
     },
     figures-index: () => if show-figures-index {
-      print-figure-index()
+      print-figure-index(sizes: sizes)
       pagebreak()
     },
     table-index: () => if show-table-index {
-      print-table-index()
+      print-table-index(sizes: sizes)
       pagebreak()
     },
     listing-index: () => if show-listing-index {
-      print-listing-index()
+      print-listing-index(sizes: sizes)
       pagebreak()
     },
     algorithm-index: () => if show-algorithm-index {
-      print-algorithm-index()
+      print-algorithm-index(sizes: sizes)
       pagebreak()
     },
   )
@@ -368,7 +372,7 @@
   // ----------- Content -----------
   // A bare `show:` here applies to `doc` and to anything placed after
   // "body" in section-order (e.g. indexes moved back to the end).
-  show: chapter.with(show-chapter-header: show-chapter-header)
+  show: chapter.with(show-chapter-header: show-chapter-header, sizes: sizes)
 
   doc
 

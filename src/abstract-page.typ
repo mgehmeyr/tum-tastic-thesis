@@ -1,7 +1,8 @@
+#import "tum-font.typ": font-sizes
 #import "utils.typ": print-section-before-chapters
 
-#let print-abstract(body) = [
-  #print-section-before-chapters(title: "Abstract", body)
+#let print-abstract(body, sizes: font-sizes) = [
+  #print-section-before-chapters(title: "Abstract", body, sizes: sizes)
 ]
 
 #let body = [

@@ -182,6 +182,32 @@
   #figure(rect(), caption: [A figure in the body])
 ]
 
+// Covers: heading-sizes overrides apply uniformly to chapter headings,
+// front-matter titles, nested front-matter headings, and ToC/index
+// titles -- all read from the same merged dict.
+#let show-custom-heading-sizes = [
+  #show: dissertation.with(
+    show-index: true,
+    show-algorithm-index: false,
+    show-figures-index: false,
+    show-cover: false,
+    show-table-index: false,
+    show-listing-index: false,
+    show-chapter-header: false,
+    acknowledgements: none,
+    zusammenfassung: none,
+    abstract: [Here is my custom abstract],
+    glossary: [
+      == A group heading
+      An entry
+    ],
+    heading-sizes: (h1: 30pt, h2: 9pt),
+  )
+
+  = Chapter One
+  == A subsection
+]
+
 #let show-index = [
   #show: dissertation.with(
     show-index: true,
@@ -397,6 +423,7 @@
 #show-front-matter-order
 #show-custom-front-matter-order
 #show-index-after-body
+#show-custom-heading-sizes
 #show-algorithm-index
 #show-figures-index
 #show-table-index

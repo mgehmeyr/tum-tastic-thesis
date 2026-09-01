@@ -1,7 +1,7 @@
 #import "tum-font.typ": font-sizes
 #import "utils.typ": format-title-section-before-chapters
 
-#let print-index() = [
+#let print-index(sizes: font-sizes) = [
   // --------------  Sets  --------------
   #show outline.entry.where(level: 1): it => {
     v(6pt) // Adjust spacing as needed
@@ -9,12 +9,12 @@
       it.element.location(),
       it.indented(it.prefix(), text(
         weight: "bold",
-        size: font-sizes.base,
+        size: sizes.base,
       )[#it.inner()]),
     )
   }
 
-  #show outline.entry: set text(size: font-sizes.base)
+  #show outline.entry: set text(size: sizes.base)
 
 
   // We need to reset the show rule in case this is called from a document
@@ -22,7 +22,7 @@
   #show heading.where(level: 1): it => it.body
 
   #show heading.where(level: 1): it => {
-    set text(size: font-sizes.h1)
+    set text(size: sizes.h1)
     v(2em)
     strong(it)
     v(1em)
@@ -32,9 +32,9 @@
   #outline(title: [Contents])
 ]
 
-#let outline-style(doc) = {
+#let outline-style(sizes: font-sizes, doc) = {
   // --------------  Sets  --------------
-  show outline.entry: set text(size: font-sizes.base)
+  show outline.entry: set text(size: sizes.base)
 
   // See: https://github.com/typst/typst/issues/1295#issuecomment-2749005636
   let in-outline = state("in-outline", false)
@@ -52,7 +52,7 @@
   show heading.where(level: 1): it => it.body
 
   show heading.where(level: 1): it => {
-    set text(size: font-sizes.h1)
+    set text(size: sizes.h1)
     v(2em)
     strong(it)
     v(1em)
@@ -61,29 +61,29 @@
   doc
 }
 
-#let print-figure-index() = [
-  #show: outline-style.with()
+#let print-figure-index(sizes: font-sizes) = [
+  #show: outline-style.with(sizes: sizes)
 
   // --------------  Content  --------------
   #outline(title: [List of Figures], target: figure.where(kind: image))
 ]
 
-#let print-table-index() = [
-  #show: outline-style.with()
+#let print-table-index(sizes: font-sizes) = [
+  #show: outline-style.with(sizes: sizes)
 
   // --------------  Content  --------------
   #outline(title: [List of Tables], target: figure.where(kind: table))
 ]
 
-#let print-listing-index() = [
-  #show: outline-style.with()
+#let print-listing-index(sizes: font-sizes) = [
+  #show: outline-style.with(sizes: sizes)
 
   // --------------  Content  --------------
   #outline(title: [List of Listings], target: figure.where(kind: raw))
 ]
 
-#let print-algorithm-index() = [
-  #show: outline-style.with()
+#let print-algorithm-index(sizes: font-sizes) = [
+  #show: outline-style.with(sizes: sizes)
 
   // --------------  Content  --------------
   #outline(title: [List of Algorithms], target: figure.where(kind: "algorithm"))

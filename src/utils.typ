@@ -10,7 +10,7 @@
   ]
 }
 
-#let format-title-section-before-chapters(title: [Title]) = [
+#let format-title-section-before-chapters(title: [Title], sizes: font-sizes) = [
   #set heading(numbering: none)
 
   // We need to reset the show rule in case this is called from a document
@@ -18,7 +18,7 @@
   #show heading.where(level: 1): it => it.body
 
   #show heading.where(level: 1): it => {
-    set text(size: font-sizes.h1)
+    set text(size: sizes.h1)
     v(2em)
     strong(it)
     v(1em)
@@ -27,9 +27,9 @@
   = #title
 ]
 
-#let print-section-before-chapters(title: [Title], body) = [
+#let print-section-before-chapters(title: [Title], body, sizes: font-sizes) = [
   // --------------  Sets  --------------
-  #set text(size: font-sizes.base)
+  #set text(size: sizes.base)
 
   #let margins = content-page-margins
   #set page(
@@ -46,7 +46,7 @@
   // already active. Otherwise both rules will stack.
   #show heading.where(level: 2): it => it.body
   #show heading.where(level: 2): it => {
-    set text(size: font-sizes.h2)
+    set text(size: sizes.h2)
     v(0.2em)
     strong(it)
     v(0.6em)
@@ -54,18 +54,18 @@
 
   #show heading.where(level: 3): it => it.body
   #show heading.where(level: 3): it => {
-    set text(size: font-sizes.h3)
+    set text(size: sizes.h3)
     strong(it)
     v(0.3em)
   }
 
   #show heading.where(level: 4): it => it.body
   #show heading.where(level: 4): it => {
-    set text(size: font-sizes.h4)
+    set text(size: sizes.h4)
     strong(it)
   }
   // -------------- Content --------------
 
-  #format-title-section-before-chapters(title: title)
+  #format-title-section-before-chapters(title: title, sizes: sizes)
   #body
 ]
