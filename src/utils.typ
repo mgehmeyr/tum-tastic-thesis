@@ -13,6 +13,10 @@
 #let format-title-section-before-chapters(title: [Title]) = [
   #set heading(numbering: none)
 
+  // We need to reset the show rule in case this is called from a document
+  // where this was already set. Otherwise both rules will stack
+  #show heading.where(level: 1): it => it.body
+
   #show heading.where(level: 1): it => {
     set text(size: font-sizes.h1)
     v(2em)
@@ -38,6 +42,9 @@
   // Headings inside `body` (e.g. a Glossary's term-group headings) would
   // otherwise fall back to Typst's default sizing, since front matter
   // runs before `chapter` sets up this same styling for the main body.
+  // We reset first in case a caller's own show rule for these levels is
+  // already active. Otherwise both rules will stack.
+  #show heading.where(level: 2): it => it.body
   #show heading.where(level: 2): it => {
     set text(size: font-sizes.h2)
     v(0.2em)
@@ -45,12 +52,14 @@
     v(0.6em)
   }
 
+  #show heading.where(level: 3): it => it.body
   #show heading.where(level: 3): it => {
     set text(size: font-sizes.h3)
     strong(it)
     v(0.3em)
   }
 
+  #show heading.where(level: 4): it => it.body
   #show heading.where(level: 4): it => {
     set text(size: font-sizes.h4)
     strong(it)
