@@ -100,9 +100,14 @@
   show link: it => {
     // Only color blue for str, which usually are links
     if type(it.dest) == str {
-      text(fill: tum-colors.blue)[#it.body]
+      // Style the link itself (`it`), not just `it.body`: replacing the
+      // whole element with content built from just its body drops the
+      // PDF hyperlink annotation entirely (confirmed by inspecting the
+      // exported PDF's /Annots -- this held for both a bare #link(url)
+      // and a #link(url)[custom text], not only the latter).
+      text(fill: tum-colors.blue)[#it]
     } else {
-      it.body
+      it
     }
   }
 
