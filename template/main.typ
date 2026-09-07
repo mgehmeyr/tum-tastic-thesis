@@ -1,11 +1,22 @@
 #import "packages.typ": package
 
-#import package("abbr") as abbr
-#import package("tum-tastic-thesis"): dissertation, thesis
+#import package("tum-tastic-thesis"): dissertation, thesis, tum-tower-image
+#import package("glossarium"): (
+  make-glossary,
+  register-glossary,
+  print-glossary,
+  gls,
+  Gls,
+  glspl,
+  gls-long,
+  gls-longplural,
+)
+#import package("dashy-todo"): (todo)
 
+#show: make-glossary.with(heading-always-first: false)
 
-#show: abbr.show-rule
-#abbr.load("abbreviations.csv")
+#import "glossary.typ": glossary
+#register-glossary(glossary)
 
 // Import each chapter here
 #import "theory.typ" as theory
@@ -38,12 +49,21 @@
     day: 4,
   ),
   acknowledgements: [#lorem(100)],
+  zusammenfassung: [#lorem(100)],
   abstract: [#lorem(100)],
+  glossary: print-glossary(
+    glossary,
+    disable-back-references: true,
+    group-heading-level: 3,
+  ),
+  cover-image: tum-tower-image(),
 )
 
 // If you are doing a bachelor/master thesis, use instead the code below.
 // Check more parameters in the template documentation:
 // https://typst.app/universe/package/tum-tastic-thesis
+//
+// Note: `zusammenfassung` and `glossary` are dissertation-only arguments.
 //
 // #show: thesis.with(
 //   author-info: (
@@ -65,6 +85,7 @@
 //   ),
 //   acknowledgements: [#lorem(100)],
 //   abstract: [#lorem(100)],
+//   cover-image: tum-tower-image(),
 // )
 
 // Your chapters go here
@@ -85,12 +106,3 @@
 
 #pagebreak()
 #bibliography("bibliography.bib")
-
-// Print abbreviations
-#set page(header: [
-  #set text(style: "italic")
-  #align(right)[Abbreviations]
-])
-
-#pagebreak()
-#abbr.list()

@@ -2,10 +2,19 @@
 
 #import "packages.typ": package
 
-#import package("abbr") as abbr
 #import package("tum-tastic-thesis"): (
   algorithm, chapter, d, flex-caption, i, listing,
 )
+#import package("glossarium"): (
+  make-glossary,
+  register-glossary,
+  print-glossary,
+  gls,
+  Gls,
+  glspl,
+  Glspl,
+)
+#import package("dashy-todo"): (todo)
 
 // Handle undefined references when compiling a chapter as a standalone
 // document. See:
@@ -19,8 +28,10 @@
   }
 }
 
-#show: abbr.show-rule
-#abbr.load("abbreviations.csv")
+#show: make-glossary.with(heading-always-first: false)
+
+#import "glossary.typ": glossary
+#register-glossary(glossary)
 
 #show: chapter.with(
   show-index: true,
@@ -45,8 +56,11 @@
   Check references style: @ch:introduction, @intro:sec:first and
   @intro:sec:second. Also @intro:subsec:first and @intro:subsec:second.
   Bibliography does not work when compiling a standalone chapter:
-  @knuth1990literate @lamport1994latex. We can also have smart abbreviations,
-  like @PDE and @PDE.
+  @knuth1990literate @lamport1994latex. We can also have a glossary, with
+  entries like @pde. @Pde also works capitalized, at the start of a
+  sentence.
+
+  #todo[Expand on this once the related work section is done.]
 
   #insert-par(3)
 
