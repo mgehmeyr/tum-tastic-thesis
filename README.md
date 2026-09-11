@@ -155,11 +155,56 @@ with the default values shown below.
 )
 ```
 
-You could then have your `main.typ` file looking something like:
+Every chapter needs the same setup: the packages it uses, the glossary, your
+own styling, and the handling of references that only resolve in the full
+document. Rather than pasting that block into each chapter, the shipped
+template puts it in a single `preamble.typ` that `main.typ` and every chapter
+import. A chapter then begins with two lines, and the settings can only ever
+be changed in one place.
+
+```typst
+// ------ preamble.typ -----
+#import "@preview/tum-tastic-thesis:0.1.1": chapter, dissertation
+
+// Re-exported: a file doing `#import "preamble.typ": *` gets all of this.
+#import "glossary.typ": glossary
+
+/// Styling that must look the same in the thesis and in a standalone chapter.
+#let thesis-styles(body) = {
+  // e.g. set text(font: "New Computer Modern")
+  body
+}
+
+/// A chapter that can also be compiled on its own.
+#let standalone(body) = {
+  show: thesis-styles
+
+  // Handle undefined references when compiling a chapter as a standalone
+  // document. See:
+  //  - https://github.com/typst/typst/issues/4524#issuecomment-2221803060
+  //  - https://github.com/typst/typst/issues/1276#issuecomment-1560091418
+  show ref: it => {
+    if it.element == none { text(fill: red)[(??)] } else { it }
+  }
+
+  show: chapter.with(/* configure to your needs */)
+
+  body
+
+  // Back matter, reached only in standalone mode.
+  set heading(numbering: none)
+  pagebreak()
+  std.bibliography("bibliography.bib")
+}
+```
+
+Your `main.typ` then looks something like:
 
 ```typst
 // ----- main.typ ------
-#import "@preview/tum-tastic-thesis:0.1.1": dissertation
+#import "preamble.typ": *
+
+#show: thesis-styles
 
 #import "introduction.typ" as introduction
 
@@ -167,47 +212,49 @@ You could then have your `main.typ` file looking something like:
 
 // We bring the content of the chapter
 #introduction.content
+
+// The full document needs its own bibliography; `standalone` adds one only
+// to the chapter's own PDF.
+#pagebreak()
+#bibliography("bibliography.bib")
 ```
 
-And then an `introduction.typ` that looks like:
+And an `introduction.typ` like:
 
 ```typst
 // ------ introduction.typ -----
-#import "@preview/tum-tastic-thesis:0.1.1": chapter
-
-// Handle undefined references when compiling a chapter as a standalone
-// document. See:
-//  - https://github.com/typst/typst/issues/4524#issuecomment-2221803060
-//  - https://github.com/typst/typst/issues/1276#issuecomment-1560091418
-#show ref: it => {
-  if it.element == none {
-    text(fill: red)[(??)]
-  } else {
-    it
-  }
-}
-
-#show: chapter.with(/* configure to your needs */)
+#import "preamble.typ": *
+#show: standalone
 
 #let content = [
     // Put the chapter's content here 
 ]
+
+#content
 ```
 
-You can now compile the introduction as a standalone document! 🎉
+`main.typ` only imports the module and uses `.content`, so the `#show:
+standalone` rule and the trailing `#content` are ignored there -- they are what
+makes the file compile on its own. You can now compile the introduction as a
+standalone document! 🎉
 
-Now, there are some caveats:
+A few things worth knowing:
 
-1. Sadly, we could not find a way to make the bibliography work when compiling a chapter as a standalone document. Instead of the reference, you will observe `??`. This does not affect the compilation of the whole document (i.e., our `main.typ`), where the references work as expected.
-1. Related to the previous point, we need to insert a function to handle undefined references at the beginning of each chapter. If you compile the introduction and there you have a reference to a label of a different chapter, you will get `??` on standalone mode.
+1. The bibliography works in standalone mode as long as the chapter appends one itself, as `standalone` does above. Without it, citations render as `??` in the chapter's own PDF while still resolving correctly in `main.typ`.
+1. A reference to a label defined in *another* chapter cannot resolve in standalone mode. That is what the `show ref` rule above is for: it renders those as a red `(??)` instead of failing the compilation.
 
 If you decide to store your chapters in a separate folder (e.g., `chapters`),
-then the easiest thing to compile each one of them via the CLI is to execute
-from the root folder (i.e., where your `main.typ` is located) the following:
+import the preamble relatively (`#import "../preamble.typ": *`) and compile
+from the root folder (i.e., where your `main.typ` is located) with:
 
 ```sh
 typst compile chapters/introduction.typ --root .
 ```
+
+The `--root` flag is needed because Typst otherwise treats the chapter's own
+folder as the project root and refuses to look above it. Prefer the relative
+`"../preamble.typ"` over a root-absolute `"/preamble.typ"`: the relative path
+also resolves when your editor's project root sits above the thesis folder.
 
 ### Using `flex-caption`
 

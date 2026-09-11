@@ -1,22 +1,10 @@
-#import "packages.typ": package
+// Packages, the glossary and your global styling all live in preamble.typ,
+// which every chapter imports as well. That way a chapter compiled on its own
+// looks exactly like it does here.
+#import "preamble.typ": *
 
-#import package("tum-tastic-thesis"): dissertation, thesis, tum-tower-image
-#import package("glossarium"): (
-  make-glossary,
-  register-glossary,
-  print-glossary,
-  gls,
-  Gls,
-  glspl,
-  gls-long,
-  gls-longplural,
-)
-#import package("dashy-todo"): (todo)
-
-#show: make-glossary.with(heading-always-first: false)
-
-#import "glossary.typ": glossary
-#register-glossary(glossary)
+#show: thesis-styles
+#show: use-glossary
 
 // Import each chapter here
 #import "theory.typ" as theory
@@ -105,4 +93,4 @@
 ])
 
 #pagebreak()
-#bibliography("bibliography.bib")
+#bibliography(bib-file)

@@ -1,47 +1,8 @@
-// ************* PASTE THIS ON EVERY STANDALONE DOCUMENT ***********************
-
-#import "packages.typ": package
-
-#import package("tum-tastic-thesis"): (
-  algorithm, chapter, d, flex-caption, i, listing,
-)
-#import package("glossarium"): (
-  make-glossary,
-  register-glossary,
-  print-glossary,
-  gls,
-  Gls,
-  glspl,
-  Glspl,
-)
-#import package("dashy-todo"): (todo)
-
-// Handle undefined references when compiling a chapter as a standalone
-// document. See:
-//  - https://github.com/typst/typst/issues/4524#issuecomment-2221803060
-//  - https://github.com/typst/typst/issues/1276#issuecomment-1560091418
-#show ref: it => {
-  if it.element == none {
-    text(fill: red)[(??)]
-  } else {
-    it
-  }
-}
-
-#show: make-glossary.with(heading-always-first: false)
-
-#import "glossary.typ": glossary
-#register-glossary(glossary)
-
-#show: chapter.with(
-  show-index: true,
-  show-figures-index: true,
-  show-table-index: true,
-  show-listing-index: true,
-  show-algorithm-index: true,
-)
-
-// ************************ PASTE UNTIL HERE *********************************
+// Packages, the glossary and the global styling come from preamble.typ, which
+// main.typ uses as well. `standalone` adds everything this file needs to
+// compile into its own PDF: indices, a bibliography and a glossary.
+#import "preamble.typ": *
+#show: standalone
 
 // Only here to generate random paragraphs of text
 #let insert-par(num-par) = {
@@ -55,10 +16,10 @@
   = Introduction <ch:introduction>
   Check references style: @ch:introduction, @intro:sec:first and
   @intro:sec:second. Also @intro:subsec:first and @intro:subsec:second.
-  Bibliography does not work when compiling a standalone chapter:
-  @knuth1990literate @lamport1994latex. We can also have a glossary, with
-  entries like @pde. @Pde also works capitalized, at the start of a
-  sentence.
+  Citations work in standalone mode too, because the chapter appends its
+  own bibliography: @knuth1990literate @lamport1994latex. We can also have
+  a glossary, with entries like @pde. @Pde also works capitalized, at the
+  start of a sentence.
 
   #todo[Expand on this once the related work section is done.]
 
